@@ -28,7 +28,7 @@ const theme = createTheme( {
     h2: { fontSize:"2rem", fontWeight:400},
     h3: { fontSize:"1rem", fontWeight:300},
   },
-});
+}); 
 
 function App() {
   return (
