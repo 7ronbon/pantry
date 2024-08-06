@@ -36,7 +36,8 @@ function App() {
   
   const [ newItem, setNewItem ] = useState( {name: '', amt:'', cost:''})
   const [ total, setTotal ] = useState(0)
-  const [searchQuery, setsearchQuery] = useState('');
+  const [searchQuery, setsearchQuery] = useState('')
+  const filterItems = items.filter(item => item.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
 
   // add items to database
   const addItem = async (e) => {
@@ -72,7 +73,7 @@ function App() {
   // delete items from database
   const deleteItem = async (id) => {
     await deleteDoc(doc(db, 'items', id));
-  }
+  };
 
   //search bar
 
@@ -81,20 +82,20 @@ function App() {
   //return
   return (
   <Container sx = {{ bgcolor:"black", textDecorationColor: 'blue'}}>
-    <Box display="flex" sx={{align:"center"}}>
+    <Box display="flex" sx={{flexDirection: "column", align: "center", p:10,}}>
     
     {/* start interior */}
-    <main className="flex min-h-screen items-center justify-between">
-      <Box className="z-10 w-1000 items-center justify-between font-mono text-sm lg:flex">
+    <main className="min-h-screen justify-between items-center">
+      <Box className="z-10 items-center justify-between font-mono text-sm">
 
       {/* start form */}
       {/* https://tailwindcss.com/docs/background-color */}
       <Box className="bg-orange-900 p-3 items-center">
         <h1 className="text-3xl p-3 text-center">the pantry...</h1>
         <form className="grid-col-12 items-center text-black">
-          <input value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value}) } className="col-3 p-3 border" type="text" placeholder="item name?"/>
-          <input value={newItem.amt} onChange={(e) => setNewItem({...newItem, amt: e.target.value}) } className="col-3 p-3 border" type="number" placeholder="amt of items?"/>
-          <input value={newItem.cost} onChange={(e) => setNewItem({...newItem, cost: e.target.value}) } className="col-3 p-3 border" type="number" placeholder="cost per item?"/>
+          <input value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value}) } className="col-3 p-3 " type="text" placeholder="item name?"/>
+          <input value={newItem.amt} onChange={(e) => setNewItem({...newItem, amt: e.target.value}) } className="col-3 p-3 " type="number" placeholder="amt of items?"/>
+          <input value={newItem.cost} onChange={(e) => setNewItem({...newItem, cost: e.target.value}) } className="col-3 p-3 " type="number" placeholder="cost per item?"/>
           <button onClick={addItem} className="col-3 p-3 bg-orange-800 hover:bg-orange-600 p-3 text-white" type="submit">add</button>
         </form>
 
@@ -104,20 +105,20 @@ function App() {
           <Box>
             <h1 className="text-3xl p-3 text-center">current items...</h1>
             <Box className="flex justify-between p-3">
-              <span><input className="col-span-3 p-2 border text-black" type="text" placeholder="search items..."/></span>
-              <span><button onClick={() => editItem(item)} className="p-3 bg-orange-800 hover:bg-orange-600">edit mode</button></span>
+              <span><input className="col-span-3 p-2 text-black" type="text" placeholder="search items..." value={searchQuery || ''} onChange={(e) => {setsearchQuery(e.target.value)}}/></span>
             </Box>  
           </Box>
         ):('')}
       
         <ul>
-          {items.map((item, id) => (
+          {filterItems.map((item, id) => (
             <li key={id} className="my-4 w-full flex justify-between mx-0 bg-orange-800">
               <div className="p-3 w-full flex justify-between mx-3"> 
                 <span className="lowercase">{item.name}</span>
                 <span>x{item.amt}</span>
                 <span>${item.cost}</span>
               </div>
+              <button onClick={() => editItem(item)} className="p-3 bg-orange-800 hover:bg-orange-600">edit</button>
               <button onClick={() => deleteItem(item.id)} className="p-3 border-orange-900 hover:bg-orange-600 w-10">x</button>
             </li>
           ))}
